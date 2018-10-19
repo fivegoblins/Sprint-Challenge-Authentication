@@ -35,7 +35,11 @@ function register(req, res) {
     .then(ids=> {
       const id = ids[0];
       const token = generateToken({username: credentials.username});
-      res.status(201).json({newUserId: id, token});
+      if (!credentials) {
+        res.status(400).json({message: "Please provide a username and password"});
+      } else {
+        res.status(201).json({newUserId: id, token});
+      }
     })
     .catch(err=> {
       res.status(500).json(err);
