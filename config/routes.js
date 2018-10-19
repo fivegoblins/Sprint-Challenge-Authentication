@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 const { authenticate } = require('./middlewares');
 const jwtKey = require('../_secrets/keys').jwtKey;
 
+const db = require('../database/dbConfig.js');
+
 module.exports = server => {
   server.post('/api/register', register);
   server.post('/api/login', login);
@@ -39,7 +41,6 @@ function register(req, res) {
       res.status(500).json(err);
     });
 }
-
 
 function login(req, res) {
   // implement user login
