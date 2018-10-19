@@ -23,11 +23,11 @@ function generateToken(user) {
   return jwt.sign(payload, jwtKey, options);
 }
 
-function register(req, res) {
+function register(req, res) { /*
   // implement user registration
-​const credentials = req.body;
-const hash = bcrypt.hashSync(credentials.password, 12);
-credentials.password = hash;
+​  const credentials = req.body;
+  const hash = bcrypt.hashSync(credentials.password, 12);
+  credentials.password = hash;
     db('users')
      .insert(credentials)
      .then(ids => {
@@ -36,12 +36,26 @@ credentials.password = hash;
      })
      .catch(err => {
       res.status(500).json(err);
-     });
+     });*/
 }
 
 function login(req, res) {
   // implement user login
-
+  const creds = req.body;
+    db('users')
+     .where({ username: creds.username })
+     .first()
+     .then(user => {
+      if (user && bcrypt.compareSync(creds.password, user.password)) {
+       const token = generateToken(user);
+       res.status(200).json({ welcome: user.username, token });
+      } else {
+       res.status(401).json({ message: 'Username and/or password is invalid' });
+      }
+     })
+     .catch(err => {
+      res.status(500).json({ err });
+     });
 }
 
 function getJokes(req, res) {
